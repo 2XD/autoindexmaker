@@ -4,7 +4,7 @@ import azure.functions as func
 from azure.storage.blob import BlobServiceClient
 import requests
 
-# Environment variables
+# env vars
 SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
 SEARCH_API_KEY = os.getenv("AZURE_SEARCH_ADMIN_KEY")
 STORAGE_CONN_STRING = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
@@ -79,17 +79,17 @@ def create_indexer(container_name):
     log(f"Indexer response: {response.status_code} - {response.text}")
 
 def run_indexing():
-    log("===== Starting indexing workflow =====")
+    log("Starting indexing workflow")
     create_search_index()
     containers = get_target_containers()
     for c in containers:
         create_data_source(c)
         create_indexer(c)
-    log("✅ Indexing complete.")
+    log("Indexing complete.")
     return {"status": "success", "containers": containers}
 
 def manual_index(req: func.HttpRequest) -> func.HttpResponse:
-    log("🌐 HTTP trigger invoked.")
+    log("HTTP trigger invoked")
     try:
         result = run_indexing()
         return func.HttpResponse(json.dumps(result), status_code=200, mimetype="application/json")
